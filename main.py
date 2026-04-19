@@ -2,35 +2,68 @@ import numpy as np
 from pathlib import Path
 from PIL import Image
 
+rng = np.random.default_rng()
+qntImagens = 0
+
 def aumentoDados(imagem):
+    global qntImagens
+    qntImagens = qntImagens + 1
+
     num = np.random.randint(0,5)
 
     match num:
         case 0:
-            gamma(imagem)
+            img = gamma(imagem)
         case 1:
-            equalizacaoHistograma(imagem)
+            img = equalizacaoHistograma(imagem)
         case 2:
-            suavizacaoGaussiana(imagem)
+            img = suavizacaoGaussiana(imagem)
         case 3:
-            translacao(imagem)
+            img = translacao(imagem)
         case 4:
-            rotacao(imagem)
+            img = rotacao(imagem)
+
+    imagem_salvar = Image.fromarray(img)
+    imagem_salvar.save(f"imagens_sinteticas/{qntImagens}.png")
 
 def gamma(imagem):
-    print("implemente o gamma")
-
+    rand = np.random.randint(0, 2)
+    if rand:
+        gamma = rng.random()
+    else:
+        gamma = rng.uniform(low=1, high=10)
+   
+    c = 255 / (255 ** gamma)
+    
+    # Vetorização: Aplica a fórmula na matriz inteira de uma vez
+    img_gamma = c * (imagem.astype(float) ** gamma)
+    
+    # Garante que os valores não ultrapassem os limites do uint8
+    img_gamma = np.clip(img_gamma, 0, 255).astype(np.uint8)
+    
+    # Recomendo retornar img_gamma em vez de salvar aqui
+    return img_gamma
+    
+    
 def equalizacaoHistograma(imagem):
     print("implemente o histograma")
+
+    return imagem
 
 def suavizacaoGaussiana(imagem):
     print("implemente a suavizacao")
 
+    return imagem
+
 def translacao(imagem):
     print("implemente a translacao")
 
+    return imagem
+
 def rotacao(imagem):
     print("implemente a rotacao")
+
+    return imagem
 
 def main():
     caminho_pasta = Path("Imagens/")
