@@ -46,9 +46,27 @@ def gamma(imagem):
     
     
 def equalizacaoHistograma(imagem):
-    print("implemente o histograma")
+    bins = range(0, 257)
+    hist, bins = np.histogram(imagem, bins)    # Calcula quantos pixels possuem cada nível de intensidade
 
-    return imagem
+    # Calcula a transformação para cada nível de intensidade
+    mn = sum(hist)
+    c = 255./mn                           # O valor de (L-1)/MN
+    out_intensity = np.zeros(256)
+    for k in range(256):
+        sum_vals = 0
+        for j in range(0, k+1):
+            sum_vals += hist[j]
+        out_intensity[k] = c*sum_vals
+    
+    # Aplica a transformação
+    img_eq = np.zeros(imagem.shape)
+    num_rows, num_cols = imagem.shape
+    for row in range(num_rows):
+        for col in range(num_cols):
+            img_eq[row, col] = out_intensity[imagem[row, col]]
+    
+    return img_eq.astype(np.uint8)
 
 def suavizacaoGaussiana(imagem):
     print("implemente a suavizacao")
