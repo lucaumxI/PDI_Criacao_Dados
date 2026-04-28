@@ -3,14 +3,14 @@ import numpy as np
 from PIL import Image
 
 # Importa funções específicas do arquivo pipeline.py
-from main import equalizacaoHistograma
+from main import translacao
 
 
 def testar_funcao_individual():
     # Carrega uma única imagem para teste
     img_original = np.array(Image.open("Imagens/Abyssinian_96.jpg"))
     # Testa apenas a função gamma
-    img_resultado = equalizacaoHistograma(img_original)
+    img_resultado = translacao(img_original)
     
     # Exibe o resultado na tela (útil para testes rápidos)
     Image.fromarray(img_resultado).show()

@@ -27,7 +27,7 @@ def aumentoDados(imagem):
     imagem_salvar.save(f"imagens_sinteticas/{qntImagens}.png")
 
 def gamma(imagem):
-    rand = np.random.randint(0, 2)
+    rand = np.random.randint(0, 2)  # sorteia se o gamma sera maior ou menor que 1
     if rand:
         gamma = rng.random()
     else:
@@ -35,17 +35,17 @@ def gamma(imagem):
    
     c = 255 / (255 ** gamma)
     
-    # Vetorização: Aplica a fórmula na matriz inteira de uma vez
+    # usa numpy pra fazer a operação gamma
     img_gamma = c * (imagem.astype(float) ** gamma)
     
     # Garante que os valores não ultrapassem os limites do uint8
     img_gamma = np.clip(img_gamma, 0, 255).astype(np.uint8)
     
-    # Recomendo retornar img_gamma em vez de salvar aqui
-    return img_gamma
+    # Retorna a imagem para ser salva
+    return img_gamma.astype(np.uint8)
     
     
-def equalizacaoHistograma(imagem):
+def equalizacaoHistograma(imagem):  # TODO: usar numpy na equalizacao
     bins = range(0, 257)
     hist, bins = np.histogram(imagem, bins)    # Calcula quantos pixels possuem cada nível de intensidade
 
@@ -74,9 +74,19 @@ def suavizacaoGaussiana(imagem):
     return imagem
 
 def translacao(imagem):
-    print("implemente a translacao")
+    deltax = rng.integers(-50, 51)
+    deltay = rng.integers(-50, 51)
+    num_rows, num_cols = imagem.shape
+    
+    img_transl = np.zeros(imagem.shape)
+    for row in range(num_rows):
+        for col in range(num_cols):
+            y_original = row - deltay
+            x_original = col - deltax
+            if 0 <= y_original < num_rows and 0 <= x_original < num_cols:
+                img_transl[row, col] = imagem[row - deltay, col - deltax]
 
-    return imagem
+    return img_transl.astype(np.uint8)
 
 def rotacao(imagem):
     print("implemente a rotacao")
@@ -90,7 +100,7 @@ def main():
     for arquivo in caminho_pasta.iterdir():
         # Verifica se o item é realmente um arquivo (ignora subpastas)
         if arquivo.is_file():
-            # Obtém o caminho completo/absoluto do arquivo
+            # Obtém o caminho absoluto do arquivo
             caminho_completo = arquivo.resolve()
             img = np.array(Image.open(caminho_completo))
             for _ in range(9):
