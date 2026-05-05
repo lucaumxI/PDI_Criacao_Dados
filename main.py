@@ -116,11 +116,6 @@ def suavizacaoGaussiana(imagem):
     return np.clip(img_smooth, 0, 255).astype(np.uint8)
 
 def translacao(imagem):
-    """Desloca a imagem horizontalmente e verticalmente.
-
-    O deslocamento é sorteado entre -50 e 50 pixels em cada direção.
-    Pixels fora do quadro são descartados e as novas áreas recebem valor zero.
-    """
     deltax = rng.integers(-50, 51)
     deltay = rng.integers(-50, 51)
     num_rows, num_cols = imagem.shape
@@ -128,11 +123,10 @@ def translacao(imagem):
     img_transl = np.zeros(imagem.shape)
     for row in range(num_rows):
         for col in range(num_cols):
-            y_original = row - deltay
-            x_original = col - deltax
-            if 0 <= y_original < num_rows and 0 <= x_original < num_cols:
-                img_transl[row, col] = imagem[y_original, x_original]
-
+            y_original = row - deltay % num_rows
+            x_original = col - deltax % num_cols
+            img_transl[row, col] = imagem[y_original, x_original]
+            
     return img_transl.astype(np.uint8)
 
 def rotacao(imagem):
