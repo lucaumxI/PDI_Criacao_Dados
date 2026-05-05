@@ -4,6 +4,7 @@ from PIL import Image
 
 # Importa funções específicas do arquivo pipeline.py
 from main import translacao
+from main import suavizacaoGaussiana
 
 
 def testar_funcao_individual():
@@ -17,6 +18,12 @@ def testar_funcao_individual():
     
     # Ou salva se preferir ver o arquivo
     Image.fromarray(img_resultado).save("teste_saida1.png")
+
+
+    img_origin = np.array(Image.open("Imagens/Persian_4.jpg"))
+    img_result = suavizacaoGaussiana(img_origin)
+    Image.fromarray(img_result).show()
+    Image.fromarray(img_result).save("teste_saida2.png")    
 
 if __name__ == "__main__":
     testar_funcao_individual()
