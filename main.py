@@ -136,15 +136,29 @@ def translacao(imagem):
     return img_transl.astype(np.uint8)
 
 def rotacao(imagem):
-    """Rotaciona a imagem em torno do centro com ângulo aleatório.
-
-    O ângulo é sorteado entre -30 e 30 graus. Não há expansão do quadro,
-    então partes rotacionadas podem ser recortadas e áreas vazias recebem preto.
+    """Roda a imagem em um ângulo aleatório.
+    
+    O ângulo é sorteado entre -180 e 180 graus. A rotação é realizada em torno do centro da imagem, e os pixels fora
+    do quadro resultante são descartados. As áreas vazias são preenchidas com valor zero.
+    
     """
-    angle = rng.uniform(-30, 30)
-    pil_img = Image.fromarray(imagem)
-    rotated = pil_img.rotate(angle, resample=Image.BILINEAR, expand=False, fillcolor=0)
-    return np.array(rotated)
+
+    angle = rng.uniform(-180, 180)  # Sorteia um ângulo entre -180 e 180 graus
+    radians = np.deg2rad(angle)
+    cos_angle = np.cos(radians)
+    sin_angle = np.sin(radians)
+
+    num_rows, num_cols = imagem.shape
+    center_y, center_x = num_rows / 2, num_cols / 2 # Centro da imagem
+    img_rot = np.zeros(imagem.shape)
+    for row in range (num_rows):
+        for col in range (num_cols):
+            y_original = int(cos_angle * (row - center_y) + sin_angle * (col - center_x) + center_y)
+            x_original = int(-sin_angle * (row - center_y) + cos_angle * (col - center_x) + center_x)
+            if 0 <= y_original < num_rows and 0 <= x_original < num_cols:
+                    img_rot[row, col] = imagem[y_original, x_original]
+
+    return img_rot.astype(np.uint8)
 
 def main():
     """Executa o pipeline de aumento de dados.
